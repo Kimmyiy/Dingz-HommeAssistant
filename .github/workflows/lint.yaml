@@ -1,0 +1,25 @@
+name: "Lint"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  ruff:
+    name: "Ruff"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout the repository"
+        uses: "actions/checkout@v6"
+
+      - name: "Lint"
+        uses: astral-sh/ruff-action@v3
+
+      - name: "Check formatting"
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check --diff"

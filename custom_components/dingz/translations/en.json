@@ -1,0 +1,190 @@
+{
+    "config": {
+        "abort": {
+            "device_already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                }
+            },
+            "confirm": {
+                "description": "Confirm setup?"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "input": {
+                "name": "Input {position}"
+            },
+            "motion_0": {
+                "name": "PIR Motion"
+            },
+            "motion_1": {
+                "name": "Internal PIR"
+            },
+            "mqtt_online": {
+                "name": "MQTT"
+            }
+        },
+        "button": {
+            "save_default_config": {
+                "name": "Save Default Config"
+            },
+            "reboot": {
+                "name": "Reboot"
+            },
+            "reset_pir_time_0": {
+                "name": "Reset PIR Time"
+            },
+            "reset_pir_time_1": {
+                "name": "Reset Internal PIR Time"
+            }
+        },
+        "cover": {
+            "blind": {
+                "name": "Blind {position}"
+            }
+        },
+        "event": {
+            "button": {
+                "name": "Button {position}",
+                "state": {
+                    "p": "Pressed",
+                    "r": "Released",
+                    "h": "Hold",
+                    "m1": "Single-click",
+                    "m2": "Double-click",
+                    "m3": "Triple-click",
+                    "m4": "Quadruple-click",
+                    "m5": "Quintuple-click"
+                }
+            },
+            "pir_0": {
+                "name": "PIR",
+                "state": {
+                    "s": "Movement",
+                    "ss": "Present",
+                    "n": "Nobody"
+                }
+            },
+            "pir_1": {
+                "name": "Internal PIR",
+                "state": {
+                    "s": "Movement",
+                    "ss": "Present",
+                    "n": "Nobody"
+                }
+            }
+        },
+        "fan": {
+            "fan": {
+                "name": "Fan {position}"
+            }
+        },
+        "light": {
+            "front": {
+                "name": "Front LED"
+            },
+            "dimmer": {
+                "name": "Light {position}"
+            },
+            "ddi": {
+                "name": "DDI Channel {position}"
+            }
+        },
+        "number": {
+            "temperature_offset": {
+                "name": "Temperature Offset"
+            }
+        },
+        "sensor": {
+            "brightness": {
+                "name": "Brightness"
+            },
+            "light_state": {
+                "name": "Light State",
+                "state": {
+                    "day": "Day",
+                    "twilight": "Twilight",
+                    "night": "Night"
+                }
+            },
+            "room_temperature": {
+                "name": "Room Temperature"
+            },
+            "uncompensated_temperature": {
+                "name": "Uncompensated Temperature"
+            },
+            "cpu_temperature": {
+                "name": "CPU Temperature"
+            },
+            "puck_temperature": {
+                "name": "Puck Temperature"
+            },
+            "fet_temperature": {
+                "name": "FET Temperature"
+            },
+            "dyn_light": {
+                "name": "Adaptive Lighting",
+                "state": {
+                    "day": "Day",
+                    "twilight": "Twilight",
+                    "night": "Night"
+                }
+            },
+            "output_power": {
+                "name": "Output {position} Power"
+            },
+            "output_power_named": {
+                "name": "{name} Power"
+            },
+            "output_energy": {
+                "name": "Output {position} Energy"
+            },
+            "output_energy_named": {
+                "name": "{name} Energy"
+            },
+            "state_time": {
+                "name": "State Time"
+            },
+            "config_timestamp": {
+                "name": "Config Timestamp"
+            },
+            "diag_free": {
+                "name": "Free Memory"
+            },
+            "diag_largest_free_block": {
+                "name": "Largest Free Block"
+            }
+        },
+        "switch": {
+            "mqtt_enable": {
+                "name": "MQTT Enable"
+            },
+            "power_socket": {
+                "name": "Power Socket {position}"
+            }
+        },
+        "text": {
+            "mqtt_uri": {
+                "name": "MQTT URI"
+            },
+            "mqtt_server_crt": {
+                "name": "MQTT Server Certificate"
+            }
+        }
+    },
+    "issues": {
+        "output_energy_dropped": {
+            "title": "Energy sensors no longer provided",
+            "description": "The dingz energy sensors were never actually provided by the dingz device itself. Rather, the integration automatically set up an integration sensor for the power sensor. Recent changes in Home Assistant broke this somewhat hacky approach. Please manually re-create the integration sensor if you're using it."
+        }
+    }
+}

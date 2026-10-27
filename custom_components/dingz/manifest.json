@@ -1,0 +1,35 @@
+{
+  "domain": "dingz",
+  "name": "Dingz",
+  "after_dependencies": [
+    "integration",
+    "mqtt"
+  ],
+  "codeowners": [
+    "@siku2"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/siku2/hass-dingz",
+  "homekit": {},
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/siku2/hass-dingz/issues",
+  "mqtt": [
+    "dingz/+/announce"
+  ],
+  "requirements": [],
+  "ssdp": [],
+  "version": "0.0.0",
+  "zeroconf": [
+    {
+      "type": "_http._tcp.local.",
+      "name": "dingz*"
+    },
+    {
+      "type": "_http._tcp.local.",
+      "properties": {
+        "mac": "246f28*"
+      }
+    }
+  ]
+}
