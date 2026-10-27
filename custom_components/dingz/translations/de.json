@@ -170,6 +170,12 @@
             },
             "power_socket": {
                 "name": "Steckdose {position}"
+            },
+            "pir_enable_0": {
+                "name": "Bewegungserkennung"
+            },
+            "pir_enable_1": {
+                "name": "Interne PIR Bewegungserkennung"
             }
         },
         "text": {

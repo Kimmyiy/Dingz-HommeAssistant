@@ -34,6 +34,13 @@ The following features are fully supported and, since I'm actively using them, s
 - Various other sensors like brightness, temperature etc.
 - Physical dingz inputs (incl. live updates when used in combination with MQTT[^1])
 
+Added in this fork, using the official dingz firmware 2.0 API documentation (only active on devices running firmware 2.0 or newer):
+
+- Switch to turn each motion detector (PIR) on or off
+- Thermostat control through the dedicated firmware 2.0 commands (`thermostat/on`, `thermostat/off`, `thermostat/mode/...`)
+- Live power readings over MQTT (`power/light/<n>`), and faster LED and thermostat updates when MQTT reports a change
+- French translation
+
 The following features have been implemented, but since I'm not actively using these configurations, I don't know how well they work.
 
 - Blinds / Motors (incl. live updates when used in combination with MQTT[^1])

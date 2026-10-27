@@ -21,13 +21,14 @@ from homeassistant.util import dt
 from .const import DOMAIN
 from .helpers import (
     CoordinatedNotificationStateEntity,
-    DingzOutputEntity,
+    UserAssignedNameMixin,
     compile_json_path,
     json_path_lookup,
 )
 from .shared import (
     DiagnosticCoordinator,
     InternalNotification,
+    OutputPowerNotification,
     Shared,
     SimpleSensorStateNotification,
     StateCoordinator,
@@ -140,7 +141,7 @@ async def async_setup_entry(
 
     for index, dingz_output in enumerate(shared.config.data.outputs):
         if dingz_output.get("active", False):
-            power = OutputPower(shared.state, index=index)
+            power = OutputPower(shared, index=index)
             entities.append(power)
 
     async_add_entities(entities)
@@ -153,27 +154,56 @@ def _dt_with_hass_tz(s: str) -> datetime | None:
     return dt.as_utc(parsed)
 
 
-class OutputPower(DingzOutputEntity, SensorEntity):
+class OutputPower(
+    CoordinatedNotificationStateEntity, UserAssignedNameMixin, SensorEntity
+):
     _attr_device_class = SensorDeviceClass.POWER
     _attr_native_unit_of_measurement = "W"
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_translation_key = "output_power"
 
-    def __init__(self, coordinator: StateCoordinator, *, index: int) -> None:
-        super().__init__(coordinator, index=index)
+    def __init__(self, shared: Shared, *, index: int) -> None:
+        super().__init__(shared)
+        self.__index = index
+        self.__power: float | None = None
 
         self._attr_unique_id = (
             f"{self.coordinator.shared.mac_addr}-output-power-{index}"
         )
+        self._attr_device_info = self.coordinator.shared.device_info
+        self.handle_state_update()
+
+    @property
+    def comp_index(self) -> int:
+        return self.__index
+
+    @property
+    def user_given_name(self) -> str | None:
+        try:
+            return self.coordinator.shared.config.data.outputs[self.__index].get("name")
+        except LookupError:
+            return None
+
+    @callback
+    def handle_notification(self, notification: InternalNotification) -> None:
+        # live updates from the MQTT topic 'power/light/<n>'
+        if not (
+            isinstance(notification, OutputPowerNotification)
+            and notification.index == self.__index
+        ):
+            return
+        self.__power = notification.value
+        self.async_write_ha_state()
+
+    @callback
+    def handle_state_update(self) -> None:
+        with contextlib.suppress(LookupError):
+            power_outputs = self.coordinator.data["sensors"]["power_outputs"]
+            self.__power = power_outputs[self.__index].get("value")
 
     @property
     def native_value(self) -> StateType | date | datetime | Decimal:
-        try:
-            power_outputs = self.coordinator.data["sensors"]["power_outputs"]
-            power_output = power_outputs[self.comp_index]
-        except LookupError:
-            return None
-        return power_output.get("value")
+        return self.__power
 
 
 class JsonPathSensor(

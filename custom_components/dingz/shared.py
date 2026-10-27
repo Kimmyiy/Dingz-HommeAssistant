@@ -58,6 +58,16 @@ class Shared:
         assert self._mac_addr is not None
         return self._mac_addr
 
+    @property
+    def firmware_v2(self) -> bool:
+        """Whether the device runs firmware 2.x or newer, which provides the extended API."""
+        raw = self.config.data.device.get("fw_version", "")
+        try:
+            major = int(raw.split(".", 1)[0])
+        except ValueError:
+            return False
+        return major >= 2
+
     async def async_config_entry_first_refresh(self) -> None:
         await self.state.async_config_entry_first_refresh()
 
@@ -116,6 +126,18 @@ class Shared:
                     "light": {
                         "topic": f"dingz/{dingz_id}/+/state/light/+",
                         "msg_callback": self._handle_mqtt_light,
+                    },
+                    "power_light": {
+                        "topic": f"dingz/{dingz_id}/+/power/light/+",
+                        "msg_callback": self._handle_mqtt_power_light,
+                    },
+                    "led": {
+                        "topic": f"dingz/{dingz_id}/+/state/led",
+                        "msg_callback": self._handle_mqtt_refresh_state,
+                    },
+                    "thermostat": {
+                        "topic": f"dingz/{dingz_id}/+/state/thermostat",
+                        "msg_callback": self._handle_mqtt_refresh_state,
                     },
                 },
             )
@@ -215,6 +237,27 @@ class Shared:
                 exception=payload["exception"],
             )
         )
+
+    async def _handle_mqtt_power_light(self, msg: mqtt.ReceiveMessage) -> None:
+        (_, _, raw) = msg.topic.rpartition("/")
+        index = int(raw)
+
+        try:
+            value = float(msg.payload)
+        except ValueError:
+            _LOGGER.error(
+                "ignoring broken power notification (topic = %s): %s",
+                msg.topic,
+                msg.payload,
+            )
+            return
+        self._notifier.dispatch(OutputPowerNotification(index=index, value=value))
+
+    async def _handle_mqtt_refresh_state(self, msg: mqtt.ReceiveMessage) -> None:
+        # The payload format of these topics isn't fully documented,
+        # so we only use them as a trigger to fetch the state through the REST API.
+        _LOGGER.debug("state change on %s, refreshing state", msg.topic)
+        await self.state.async_request_refresh()
 
 
 class StateCoordinator(DataUpdateCoordinator[api.State]):
@@ -366,6 +409,12 @@ class LightStateNotification(InternalNotification):
     turn: Literal["on"] | Literal["off"]
     brightness: int
     exception: int
+
+
+@dataclasses.dataclass(slots=True, kw_only=True)
+class OutputPowerNotification(InternalNotification):
+    index: int
+    value: float
 
 
 _NotificationCallbackT = Callable[[InternalNotification], None]

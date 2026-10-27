@@ -170,6 +170,12 @@
             },
             "power_socket": {
                 "name": "Power Socket {position}"
+            },
+            "pir_enable_0": {
+                "name": "Motion Detection"
+            },
+            "pir_enable_1": {
+                "name": "Internal PIR Motion Detection"
             }
         },
         "text": {

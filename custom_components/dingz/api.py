@@ -743,6 +743,32 @@ class Client:
     async def reset_pir_time(self, index: int) -> None:
         await self._post(f"pir/{index}/reset_time", {})
 
+    async def set_pir_enabled(self, index: int, enabled: bool) -> None:
+        # firmware 2.0+
+        action = "on" if enabled else "off"
+        await self._post(f"pir/{index}/{action}", {})
+
+    async def thermostat_on(self, *, temp: float | None = None) -> None:
+        # firmware 2.0+
+        params = {key: value for key, value in (("temp", temp),) if value is not None}
+        await self._post("thermostat/on", params, as_query_params=True)
+
+    async def thermostat_off(self) -> None:
+        # firmware 2.0+
+        await self._post("thermostat/off", {})
+
+    async def set_thermostat_mode(
+        self, mode: Literal["heating"] | Literal["cooling"]
+    ) -> None:
+        # firmware 2.0+
+        await self._post(f"thermostat/mode/{mode}", {})
+
+    async def set_thermostat_target_temp(self, target_temp: float) -> None:
+        # firmware 2.0+
+        await self._post(
+            "thermostat", {"target_temp": target_temp}, as_query_params=True
+        )
+
     async def save_default_config(self) -> None:
         await self._post("save_default_config", {})
 
