@@ -48,6 +48,16 @@ async def async_setup_entry(
         ):
             entities.append(PowerSocket(shared, index))
 
+    # turning a PIR on or off is only possible with firmware 2.0+
+    if shared.firmware_v2:
+        try:
+            pirs = shared.state.data["sensors"]["pirs"]
+        except LookupError:
+            pirs = []
+        for index, dingz_pir in enumerate(pirs):
+            if dingz_pir is not None:
+                entities.append(PirEnable(shared.state, index))
+
     async_add_entities(entities)
 
 
@@ -132,4 +142,39 @@ class PowerSocket(
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         await self.coordinator.shared.client.set_dimmer(self.__index, "off")
+        await self.delayed_request_refresh()
+
+
+class PirEnable(
+    CoordinatorEntity[StateCoordinator],
+    SwitchEntity,
+    DelayedCoordinatorRefreshMixin,
+):
+    _attr_has_entity_name = True
+    _attr_entity_category = EntityCategory.CONFIG
+
+    def __init__(self, coordinator: StateCoordinator, index: int) -> None:
+        super().__init__(coordinator)
+        self.__index = index
+
+        self._attr_unique_id = f"{self.coordinator.shared.mac_addr}-pir_enable-{index}"
+        self._attr_device_info = self.coordinator.shared.device_info
+        self._attr_translation_key = f"pir_enable_{index}"
+
+    @property
+    def is_on(self) -> bool | None:
+        try:
+            pir = self.coordinator.data["sensors"]["pirs"][self.__index]
+        except LookupError:
+            return None
+        if pir is None:
+            return None
+        return pir.get("enabled")
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        await self.coordinator.shared.client.set_pir_enabled(self.__index, True)
+        await self.delayed_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        await self.coordinator.shared.client.set_pir_enabled(self.__index, False)
         await self.delayed_request_refresh()

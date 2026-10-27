@@ -43,7 +43,9 @@ async def async_setup_entry(
     except LookupError:
         pirs = []
     for index, dingz_pir in enumerate(pirs):
-        if dingz_pir and dingz_pir.get("enabled", False):
+        # with firmware 2.0+ a disabled PIR can be turned on from Home Assistant,
+        # so we keep its motion sensor around
+        if dingz_pir and (dingz_pir.get("enabled", False) or shared.firmware_v2):
             entities.append(Motion(shared, index=index))
 
     async_add_entities(entities)

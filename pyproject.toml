@@ -62,3 +62,7 @@ package = false
 
 [tool.uv.build-backend]
 module-root = "custom_components"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

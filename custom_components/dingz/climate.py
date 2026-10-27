@@ -110,7 +110,20 @@ class Climate(
         return dingz_to_hvac_action(raw)
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
-        await self.coordinator.shared.client.update_thermostat_config(
+        shared = self.coordinator.shared
+        if shared.firmware_v2:
+            match hvac_mode:
+                case HVACMode.OFF:
+                    await shared.client.thermostat_off()
+                case HVACMode.HEAT | HVACMode.COOL:
+                    await shared.client.set_thermostat_mode(
+                        "heating" if hvac_mode == HVACMode.HEAT else "cooling"
+                    )
+                    await shared.client.thermostat_on()
+            await self.delayed_request_refresh()
+            return
+
+        await shared.client.update_thermostat_config(
             api.ThermostatConfig(
                 enable=hvac_mode != HVACMode.OFF,
                 free_cooling=hvac_mode != HVACMode.OFF,
@@ -120,6 +133,14 @@ class Climate(
         await self.delayed_request_refresh()
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
+        shared = self.coordinator.shared
+        if shared.firmware_v2:
+            if (value := kwargs.get(ATTR_TEMPERATURE)) is None:
+                return
+            await shared.client.set_thermostat_target_temp(value)
+            await self.delayed_request_refresh()
+            return
+
         config = api.ThermostatConfig()
 
         if value := kwargs.get(ATTR_TEMPERATURE):
