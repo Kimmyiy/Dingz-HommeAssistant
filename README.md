@@ -1,18 +1,20 @@
 # Dingz Home Assistant Integration
 
-[![GitHub Release](https://img.shields.io/github/release/siku2/hass-dingz.svg?style=flat-square)](https://github.com/siku2/hass-dingz/releases)
 [![HACS](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://hacs.xyz/docs/faq/custom_repositories)
-
-[![License](https://img.shields.io/github/license/siku2/hass-dingz.svg?style=flat-square)](LICENSE)
-[![GitHub Activity](https://img.shields.io/github/commit-activity/y/siku2/hass-dingz.svg?style=flat-square)](https://github.com/siku2/hass-dingz/commits/main)
+[![License](https://img.shields.io/github/license/Kimmyiy/Dingz-HommeAssistant.svg?style=flat-square)](LICENSE)
 
 _Integration to integrate with [Dingz](https://www.dingz.ch) devices._
+
+> [!NOTE]
+> This project is based on [siku2/hass-dingz](https://github.com/siku2/hass-dingz) by Simon Berger (MIT license).
+> It extends it with features from the official dingz firmware 2.0 REST API and MQTT documentation published by iolo AG.
+> Don't install both integrations at the same time: they use the same `dingz` domain.
 
 ## Installation
 
 Make sure you have [HACS](https://hacs.xyz) installed.
 
-1. Add this repository as a custom repository to HACS: [![Add Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=siku2&repository=hass-dingz&category=integration)
+1. Add this repository as a custom repository to HACS: [![Add Repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Kimmyiy&repository=Dingz-HommeAssistant&category=integration)
 2. Use HACS to install the integration.
 3. Restart Home Assistant.
 4. Set up the integration using the UI: [![Add Integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=dingz)
@@ -28,7 +30,7 @@ The following features are fully supported and, since I'm actively using them, s
 - Front panel LED with RGB support
 - PIR Motion detection (incl. live updates when used in combination with MQTT[^1])
 - Button press events (**only** when used in combination with MQTT[^1])
-- Power and Energy sensors for outputs
+- Power sensors for outputs
 - Various other sensors like brightness, temperature etc.
 - Physical dingz inputs (incl. live updates when used in combination with MQTT[^1])
 
@@ -54,16 +56,8 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ### Providing translations for other languages
 
-[![GitLocalize](https://gitlocalize.com/repo/8874/whole_project/badge.svg)](https://gitlocalize.com/repo/8874)
-
-If you would like to use the integration in another language, you can help out by providing the necessary translations.
-
-[Head over to **GitLocalize** to start translating.](https://gitlocalize.com/repo/8874)
-
-If your desired language isn't available there, just open an issue to request it.
-
-You can also just do the translations manually in [custom_components/dingz/translations/](./custom_components/dingz/translations/) and open a pull request with the changes.
+Translations live in [custom_components/dingz/translations/](./custom_components/dingz/translations/). Add or edit a file there and open a pull request with the changes.
 
 <!--  -->
 
-[MQTT Guide]: https://github.com/siku2/hass-dingz/blob/main/docs/mqtt.md
+[MQTT Guide]: docs/mqtt.md

@@ -6,14 +6,14 @@
     "mqtt"
   ],
   "codeowners": [
-    "@siku2"
+    "@Kimmyiy"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/siku2/hass-dingz",
+  "documentation": "https://github.com/Kimmyiy/Dingz-HommeAssistant",
   "homekit": {},
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/siku2/hass-dingz/issues",
+  "issue_tracker": "https://github.com/Kimmyiy/Dingz-HommeAssistant/issues",
   "mqtt": [
     "dingz/+/announce"
   ],
